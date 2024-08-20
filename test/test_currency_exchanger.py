@@ -12,6 +12,21 @@ class TestCurrencyExchanger(unittest.TestCase):
         self.mock_api_response = get_mock_currency_api_response()
 
     @patch("source.currency_exchanger.requests.get")
+    def test_currency_rate(self, mock_get):
+        # Assign mock's return value
+        mock_get.return_value = self.mock_api_response
+        
+        # Act - Execute the currency rate function
+        self.currency_exchanger.get_currency_rate()
+
+        # Check if the API call was made once
+        mock_get.assert_called_once_with(self.currency_exchanger.currency_api, params={'from': 'THB', 'to': 'KRW'})
+
+        # Assert the expected rate
+        self.assertEqual(self.currency_exchanger.api_response, self.mock_api_response.json())
+
+
+    @patch("source.currency_exchanger.requests.get")
     def test_currency_exchange(self, mock_get):
         #Assign mock's return value
         mock_get.return_value = self.mock_api_response
